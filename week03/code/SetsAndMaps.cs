@@ -19,10 +19,19 @@ public static class SetsAndMaps
     /// that there were no duplicates) and therefore should not be returned.
     /// </summary>
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
-    public static string[] FindPairs(string[] words)
+    public static List<string> FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var seen = new HashSet<string>();
+    var result = new List<string>();
+
+    foreach (var word in words) {
+        string reversed = "" + word[1] + word[0];
+        if (word[0] != word[1] && seen.Contains(reversed))
+            result.Add($"{reversed} & {word}");
+        else
+            seen.Add(word);
+    }
+    return result;
     }
 
     /// <summary>
@@ -38,14 +47,19 @@ public static class SetsAndMaps
     /// <returns>fixed array of divisors</returns>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
-        var degrees = new Dictionary<string, int>();
-        foreach (var line in File.ReadLines(filename))
-        {
-            var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
+         var degrees = new Dictionary<string, int>();
+    foreach (var line in File.ReadLines(filename)) {
+        var fields = line.Split(",");
+        if (fields.Length >= 4) {
+            string degree = fields[3].Trim();
+            if (degrees.ContainsKey(degree))
+                degrees[degree]++;
+            else
+                degrees[degree] = 1;
         }
+    }
+    return degrees;
 
-        return degrees;
     }
 
     /// <summary>
@@ -66,8 +80,19 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+         var counts = new Dictionary<char, int>();
+
+    foreach (char c in word1.Replace(" ", "").ToLower()) {
+        counts[c] = counts.GetValueOrDefault(c, 0) + 1;
+    }
+
+    foreach (char c in word2.Replace(" ", "").ToLower()) {
+        if (!counts.ContainsKey(c) || counts[c] == 0)
+            return false;
+        counts[c]--;
+    }
+
+    return counts.Values.All(v => v == 0);
     }
 
     /// <summary>
